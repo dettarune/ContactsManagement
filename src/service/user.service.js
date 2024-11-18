@@ -133,7 +133,10 @@ const update = async (request) => {
 
     const checkUser = await prisma.user.count({
         where: {
-            username: user.username
+            username: user.username,
+        },
+        select: {
+            mail: true,
         }
     })
 
@@ -150,21 +153,21 @@ const update = async (request) => {
         data.password = await bcrypt.hash(user.password, 10)
     }
     
-    // if (user.mail) {
-    //     data.mail = user.mail
-    //     kirimToken(user.mail, token)
-    //     if(user.token == token){
-    //         return prisma.user.update({
-    //             where: {
-    //                 username: user.username
-    //             },
-    //             data: {
-    //                 updateToken: token
-    //             }
-    //         })
+    if (user.mail !== checkUser.mail) {
+        data.mail = user.mail
+        kirimToken(user.mail, token)
+        if(user.token == token){
+            return prisma.user.update({
+                where: {
+                    username: user.username
+                },
+                data: {
+                    updateToken: token
+                }
+            })
             
-    //     }
-    // }
+        }
+    }
 
     return prisma.user.update({
         where: {
@@ -173,7 +176,7 @@ const update = async (request) => {
         data: {
             username: user.username,
             password: user.password,
-            email: user.email
+            mail: user.email
         },
         select: {
             username: true,
