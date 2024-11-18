@@ -2,6 +2,8 @@ import { prisma } from "/home/detarune/Pictures/newFolderContacts/src/applicatio
 import { createContactValidation, getContactValidation, searchContactValidation, updateContactValidation } from "/home/detarune/Pictures/newFolderContacts/src/validation/contact-validation.js";
 import { validate } from "/home/detarune/Pictures/newFolderContacts/src/validation/validation.js";
 import { ResponseError } from "/home/detarune/Pictures/newFolderContacts/src/error/response_error.js";
+import userService from "/home/detarune/Pictures/newFolderContacts/src/service/user.service.js";
+
 
 const createContact = async (user, req) => {
     const contact = validate(createContactValidation, req)
@@ -23,6 +25,7 @@ const updateContact = async (user, request) => {
 
     const id = req.params.id
     const contact = validate(updateContactValidation, request)
+    const token = uuidv4()
 
     const contactData = await prisma.contact.findFirst({
         where: {
@@ -34,6 +37,10 @@ const updateContact = async (user, request) => {
     if (!contactData) {
         throw new ResponseError(404, "ID tidak ditemukan");
     }
+
+    if(request.email) {
+        userService.kirimToken(user.username, token)
+    } 
 
     return await prisma.contact.update({
         where: {

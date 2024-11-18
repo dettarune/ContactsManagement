@@ -1,4 +1,3 @@
-import { ResponseError } from "/home/detarune/Pictures/newFolderContacts/src/error/response_error.js";
 import userService from "/home/detarune/Pictures/newFolderContacts/src/service/user.service.js";
 
 const register = async (req, res, next) => {
@@ -36,19 +35,17 @@ const getUser= async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const user = req.user;  // Mengambil informasi user dari request (misalnya dari middleware autentikasi)
-        const request = req.body;  // Mengambil data dari body request
+        const user = req.user;  
+        const request = req.body;  
 
-        // Memanggil fungsi updateContact untuk melakukan pembaruan
-        const updatedContact = await contactService.updateContact(user, request);
+        const updatedContact = await userService.update(request);
 
-        // Mengirimkan response berhasil
         res.status(200).json({
             data: updatedContact,
             message: "Data telah berhasil diupdate",
         });
     } catch (error) {
-        next(error);  // Menangani error yang terjadi
+        next(error);  
     }
 };
 
