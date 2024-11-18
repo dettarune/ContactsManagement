@@ -21,6 +21,7 @@ const createContact = async (user, req) => {
 
 const updateContact = async (user, request) => {
 
+    const id = req.params.id
     const contact = validate(updateContactValidation, request)
 
     const contactData = await prisma.contact.findFirst({
